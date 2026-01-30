@@ -4,28 +4,32 @@ import java.util.Arrays;
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 
-public class Calculator {
+public class Calculator { // This holds the dimensions for the Calculator
     int boardWidth = 360;
     int boardHeight = 540;
 
-    Color customLightGray = new Color(212, 212, 210);
+    Color customLightGray = new Color(212, 212, 210); // Custom colors to be used ton later
     Color customDarkGray = new Color(80, 80, 80);
     Color customBlack = new Color(28, 28, 28);
     Color customOrange = new Color(255, 149, 0);
-    String[] buttonValues = {
+    String[] buttonValues = { // General Layout of the calculator in a string
             "AC", "+/-", "%", "÷",
             "7", "8", "9", "×",
             "4", "5", "6", "-",
             "1", "2", "3", "+",
             "0", ".", "√", "="
     };
-    String[] rightSymbols = { "÷", "×", "-", "+", "=" };
-    String[] topSymbols = { "AC", "+/-", "%" };
+    String[] rightSymbols = { "÷", "×", "-", "+", "=" }; // symbols on the right side, i.e operators
+    String[] topSymbols = { "AC", "+/-", "%" }; // symbols on the top side, i.e operators + AC
 
-    JFrame frame = new JFrame("Calculator");
+    JFrame frame = new JFrame("Calculator"); // The main frame of the calculator
     JLabel displayLabel = new JLabel();
     JPanel displayPanel = new JPanel();
     JPanel buttonsPanel = new JPanel();
+    // A + - % * B operands
+    String A = "0";
+    String operator = null;
+    String B = null;
 
     Calculator() {
         frame.setVisible(true);
@@ -56,9 +60,59 @@ public class Calculator {
             button.setFont(new Font("Arial", Font.PLAIN, 30));
             button.setText(buttonValue);
             button.setFocusable(false);
+            button.setBorder(new LineBorder(customBlack));
+            if (Arrays.asList(topSymbols).contains(buttonValue)) {
+                button.setBackground(customLightGray);
+                button.setForeground(customBlack);
+            } else if (Arrays.asList(rightSymbols).contains(buttonValue)) {
+                button.setBackground(customOrange);
+                button.setForeground(Color.white);
+            } else {
+                button.setBackground(customDarkGray);
+                button.setForeground(Color.white);
+            }
+
             buttonsPanel.add(button);
 
+            button.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    JButton button = (JButton) e.getSource();
+                    String buttonValue = button.getText();
+                    // Handle right symbols (operators)
+                    if (Arrays.asList(rightSymbols).contains(buttonValue)) {
+
+                        // Handle top symbols (AC, +/-, %)
+                    } else if (Arrays.asList(topSymbols).contains(buttonValue)) {
+                        if (buttonValue == "AC") {
+                            clearAll();
+                            displayLabel.setText("0");
+                        } else if (buttonValue == "+/-") {
+
+                        }
+
+                    } else { // digits or .
+                        if (buttonValue.equals(".")) { // line to add decimalvlaue on the displayLabel
+                            if (!displayLabel.getText().contains(buttonValue)) {
+                                displayLabel.setText(displayLabel.getText() + buttonValue);
+                            }
+                        } else if ("0123456789".contains(buttonValue)) {
+                            if (displayLabel.getText().equals("0")) {
+                                displayLabel.setText(buttonValue);
+                            } else {
+                                displayLabel.setText(displayLabel.getText() + buttonValue);
+                            }
+                        }
+                    }
+                }
+            });
         }
 
     }
+
+    void clearAll() {
+        A = "0";
+        operator = null;
+        B = null;
+    }
+
 }
