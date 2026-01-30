@@ -32,7 +32,7 @@ public class Calculator { // This holds the dimensions for the Calculator
     String B = null;
 
     Calculator() {
-        frame.setVisible(true);
+        // frame.setVisible(true);
         frame.setSize(boardWidth, boardHeight);
         frame.setLocationRelativeTo(null);
         frame.setResizable(false);
@@ -80,17 +80,58 @@ public class Calculator { // This holds the dimensions for the Calculator
                     String buttonValue = button.getText();
                     // Handle right symbols (operators)
                     if (Arrays.asList(rightSymbols).contains(buttonValue)) {
+                        if (buttonValue == "=") {
+                            if (A != null) {
+                                B = displayLabel.getText();
+                                double numA = Double.parseDouble(A);
+                                double numB = Double.parseDouble(B);
+
+                                if (operator == "+") {
+                                    displayLabel.setText(removeZeroDecimal(numA + numB));
+                                } else if (operator == "-") {
+                                    displayLabel.setText(removeZeroDecimal(numA - numB));
+                                } else if (operator == "×") {
+                                    displayLabel.setText(removeZeroDecimal(numA * numB));
+                                } else if (operator == "÷") {
+                                    displayLabel.setText(removeZeroDecimal(numA / numB));
+                                }
+                                clearAll();
+
+                            }
+
+                        } else if ("×-+÷".contains(buttonValue)) {
+                            if (operator == null) {
+                                A = displayLabel.getText();
+                                displayLabel.setText("0");
+                                B = "0";
+                            }
+                            operator = buttonValue;
+                        }
 
                         // Handle top symbols (AC, +/-, %)
                     } else if (Arrays.asList(topSymbols).contains(buttonValue)) {
                         if (buttonValue == "AC") {
                             clearAll();
                             displayLabel.setText("0");
-                        } else if (buttonValue == "+/-") {
+                        }
+
+                        else if (buttonValue == "+/-") {
+                            double numDisplay = Double.parseDouble(displayLabel.getText());
+                            numDisplay *= -1;
+                            displayLabel.setText(removeZeroDecimal(numDisplay));
+                        } else if (buttonValue == "%") {
+                            double numDisplay = Double.parseDouble(displayLabel.getText());
+                            numDisplay /= 100;
+                            displayLabel.setText(removeZeroDecimal(numDisplay));
 
                         }
 
-                    } else { // digits or .
+                    } else { // digits or . or "√"
+                        if (buttonValue == "√") {
+                            double numDisplay = Double.parseDouble(displayLabel.getText());
+                            numDisplay = Math.sqrt(numDisplay);
+                            displayLabel.setText(removeZeroDecimal(numDisplay));
+                        }
                         if (buttonValue.equals(".")) { // line to add decimalvlaue on the displayLabel
                             if (!displayLabel.getText().contains(buttonValue)) {
                                 displayLabel.setText(displayLabel.getText() + buttonValue);
@@ -105,6 +146,7 @@ public class Calculator { // This holds the dimensions for the Calculator
                     }
                 }
             });
+            frame.setVisible(true);
         }
 
     }
@@ -113,6 +155,14 @@ public class Calculator { // This holds the dimensions for the Calculator
         A = "0";
         operator = null;
         B = null;
+    }
+
+    String removeZeroDecimal(double numDisplay) {
+        if (numDisplay % 1 == 0) {
+            return Integer.toString((int) numDisplay);
+        }
+        return Double.toString(numDisplay);
+
     }
 
 }
